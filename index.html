@@ -26,9 +26,9 @@
 
         const g = svg.append('g')
 
-        d3.json('/data/nygeo.json').then(function (nygeo) {
+        d3.json('./data/nygeo.json').then(function (nygeo) {
 
-            d3.csv('/data/data.csv').then(function (airbnbData) {
+            d3.csv('./data/data.csv').then(function (airbnbData) {
 
                 const albersProjection = d3.geoAlbers()
 
