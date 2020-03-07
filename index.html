@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Airbnb in NYC</title>
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <h1>Airbnb in NYC</h1>
+
+    <div id="airbnb-name"></div>
+    
+    <script>
+        const m = {
+            width: 600,
+            height: 600
+        }
+
+        const svg = d3.select("body").append('svg')
+            .attr('width', m.width)
+            .attr('height', m.height)
+
+        const g = svg.append('g')
+
+        d3.json('/data/nygeo.json').then(function (nygeo) {
+
+            d3.csv('/data/data.csv').then(function (airbnbData) {
+
+                const albersProjection = d3.geoAlbers()
+
+                // scales to fit height and width
+                albersProjection.fitExtent([[0, 0], [m.width, m.height]], nygeo)
+
+                const geoPath = d3.geoPath()
+                    .projection(albersProjection)
+
+                // draws map of nyc
+                g.selectAll('path')
+                    .data(nygeo.features)
+                    .enter()
+                    .append('path')
+                    .attr('d', geoPath)
+
+                // plots circles on the nyc map
+                g.selectAll('.circle')
+                    .data(airbnbData)
+                    .enter()
+                    .append('circle')
+                    .attr('cx', function (d) {
+                        let scaledPoints = albersProjection([d['longitude'], d['latitude']])
+                        return scaledPoints[0]
+                    })
+                    .attr('cy', function (d) {
+                        let scaledPoints = albersProjection([d['longitude'], d['latitude']])
+                        return scaledPoints[1]
+                    })
+                    .attr('r', 1)
+                    .on("click", function () {
+                        d3.select(this)
+                            .attr("opacity", 1)
+                            .transition()
+                            .duration(5000)
+                            .attr("cx", m.width * Math.round(Math.random()))
+                            .attr("cy", m.height * Math.round(Math.random()))
+                            .attr("opacity", 0)
+                            .on('end', function () {
+                                d3.select(this).remove()
+                            })
+                    })
+                    .on('mouseover', function (airbnb) {
+                        document.getElementById('airbnb-name').innerHTML = airbnb.name
+                    })
+                    .on('mouseout', function () {
+                        document.getElementById('airbnb-name').innerHTML = ''
+                    })
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+#airbnb-name {
+    color: rgb(255, 167, 112);
+    font-weight: bold;
+    height: 2rem;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 3rem;
+    color: rgb(255, 141, 70);
+}
+
+circle {
+    fill: #e7009a;
+}
+
+circle:hover{
+    fill: #00ab9f;
+}
+
+h1 {
+    font-size: 5em;
+    letter-spacing: -.05em;
+    margin: 0rem;
+}
+
+path {
+    fill:rgb(255, 141, 70);
+}
